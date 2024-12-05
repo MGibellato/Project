@@ -1,0 +1,4 @@
+function M = generateRandomMatrix()
+    % Generates a 2x2 random matrix with entries in [-1, 1]
+    M = 2 * rand(2, 2) - 1; % Random entries between -1 and 1
+end
