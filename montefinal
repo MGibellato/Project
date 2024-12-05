@@ -1,0 +1,8 @@
+n = 1000; % Number of matrices per run
+j = 100; % Number of Monte Carlo runs
+
+results = monteCarloSimulation(j, n);
+disp('Aggregate Results:');
+disp(results.AggregateResults);
+disp('Average Results:');
+disp(results.AverageResults);
