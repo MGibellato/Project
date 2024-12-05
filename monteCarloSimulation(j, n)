@@ -1,0 +1,41 @@
+function results = monteCarloSimulation(j, n)
+    % Perform the Monte Carlo simulation
+    % j: Number of Monte Carlo runs (outer loop)
+    % n: Number of matrices analyzed in each run (inner loop)
+
+    % Preallocate storage for results from each run
+    allResults = struct('SaddleNodes', zeros(j, 1), ...
+                        'NonIsolatedFixedPoints', zeros(j, 1), ...
+                        'UnstableNodes', zeros(j, 1), ...
+                        'UnstableSpirals', zeros(j, 1), ...
+                        'StableNodes', zeros(j, 1), ...
+                        'StableSpirals', zeros(j, 1), ...
+                        'StarsOrDegenerateNodes', zeros(j, 1), ...
+                        'Centers',zeros(j, 1));
+
+    % Outer loop: Run the Monte Carlo simulation j times
+    for k = 1:j
+        % Perform analysis for n matrices
+        singleRunResults = monteCarloMatrixAnalysis(n);
+
+        % Store results for this run
+        allResults.SaddleNodes(k) = singleRunResults.SaddleNodes;
+        allResults.NonIsolatedFixedPoints(k) = singleRunResults.NonIsolatedFixedPoints;
+        allResults.UnstableNodes(k) = singleRunResults.UnstableNodes;
+        allResults.UnstableSpirals(k) = singleRunResults.UnstableSpirals;
+        allResults.StableNodes(k) = singleRunResults.StableNodes;
+        allResults.StableSpirals(k) = singleRunResults.StableSpirals;
+        allResults.StarsOrDegenerateNodes(k) = singleRunResults.StarsOrDegenerateNodes;
+        allResults.Centers(k) = singleRunResults.Centers;
+    end
+
+    % Aggregate results over all runs
+    totalResults = structfun(@(x) sum(x), allResults, 'UniformOutput', false);
+
+    % Calculate average results per run
+    avgResults = structfun(@(x) mean(x), allResults, 'UniformOutput', false);
+
+    % Combine results into a single structure
+    results = struct('AggregateResults', totalResults, 'AverageResults', avgResults);
+end
+
