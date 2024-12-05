@@ -1,0 +1,72 @@
+function results = monteCarloMatrixAnalysis(n)
+    % Monte Carlo simulation analyzing random 2x2 matrices
+    % n: Number of matrices to generate
+    
+    % Initialize counters for each type
+    saddleNodes = 0;
+    nonIsolatedFixedPoints = 0;
+    unstableNodes = 0;
+    unstableSpirals = 0;
+    stableNodes = 0;
+    stableSpirals = 0;
+    starsOrDegenerateNodes = 0;
+    center = 0;
+
+    % Loop over the number of matrices
+    for i = 1:n
+        M = generateRandomMatrix();
+        
+        % Matrix entries
+        a = M(1, 1);
+        d = M(2, 2);
+        b = M(1, 2);
+        c = M(2, 1);
+        
+        % Trace and determinant
+        traceVal = a + d;
+        determinant = a * d - b * c;
+        
+        % Determine matrix type
+        if determinant < 0
+            % Saddle node condition
+            saddleNodes = saddleNodes + 1;
+        elseif determinant == 0
+            % Non-isolated fixed point
+            nonIsolatedFixedPoints = nonIsolatedFixedPoints + 1;
+        else
+            % Check based on trace and determinant
+            discriminant = traceVal^2 - 4 * determinant;
+            if traceVal > 0
+                % a > d case
+                if discriminant == 0
+                    starsOrDegenerateNodes = starsOrDegenerateNodes + 1;
+                elseif discriminant > 0
+                    unstableNodes = unstableNodes + 1;
+                else
+                    unstableSpirals = unstableSpirals + 1;
+                end
+            elseif traceVal == 0
+                center = center + 1;
+            else
+                % traceVal < 0
+                if discriminant == 0
+                    starsOrDegenerateNodes = starsOrDegenerateNodes + 1;
+                elseif discriminant > 0
+                    stableNodes = stableNodes + 1;
+                else
+                    stableSpirals = stableSpirals + 1;
+                end
+            end
+        end
+    end
+    
+    % Store results in a struct
+    results = struct('SaddleNodes', saddleNodes, ...
+                     'NonIsolatedFixedPoints', nonIsolatedFixedPoints, ...
+                     'UnstableNodes', unstableNodes, ...
+                     'UnstableSpirals', unstableSpirals, ...
+                     'StableNodes', stableNodes, ...
+                     'StableSpirals', stableSpirals, ...
+                     'StarsOrDegenerateNodes', starsOrDegenerateNodes,...
+                     'Centers', center);
+end
